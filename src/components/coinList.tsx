@@ -1,18 +1,36 @@
-import React from "react";
-import { Table } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, message } from "antd";
 import type { TableProps } from "antd";
 import { Constant } from "../util/Constant";
 import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { CoinType } from "../type/type";
 
-const CoinList = (props: { data: CoinType[]; curreny: String }) => {
+const CoinList = (props: {
+  data: CoinType[];
+  curreny: string;
+  viewType: string;
+}) => {
+  const [messageApi, contextHolder] = message.useMessage();
+  const [dataSource, setDataSource] = useState<CoinType[]>(props.data);
+
+  useEffect(() => {
+    setDataSource(props.data);
+  }, [props.data]);
+
   const columns: TableProps<any>["columns"] = [
     {
       title: "",
       dataIndex: "bookmark",
       key: "bookmark",
-      render: (value: boolean) => (
-        <span className={value ? "text-yellow-200" : ""}>
+      render: (value: boolean, item: CoinType, index: number) => (
+        <span
+          className={
+            value ? "text-yellow-200 cursor-pointer" : "cursor-pointer"
+          }
+          onClick={() => {
+            onChangeBookMark(value, item, index);
+          }}
+        >
           {value ? <StarFilled /> : <StarOutlined />}
         </span>
       ),
@@ -37,7 +55,7 @@ const CoinList = (props: { data: CoinType[]; curreny: String }) => {
       render: (value) => (
         <span className="font-bold">
           {props.curreny === Constant.CURRENCY.KRW ? "₩" : "$"}
-          {value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}
+          {value && value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}
         </span>
       ),
     },
@@ -46,7 +64,7 @@ const CoinList = (props: { data: CoinType[]; curreny: String }) => {
       key: "hour",
       dataIndex: "hour",
       align: "end",
-      render(value) {
+      render: (value) => {
         return {
           props: {
             style: {
@@ -56,7 +74,9 @@ const CoinList = (props: { data: CoinType[]; curreny: String }) => {
           },
           children: (
             <div>
-              {value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}%
+              {value &&
+                value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}
+              %
             </div>
           ),
         };
@@ -67,7 +87,7 @@ const CoinList = (props: { data: CoinType[]; curreny: String }) => {
       key: "day",
       dataIndex: "day",
       align: "end",
-      render(value) {
+      render: (value) => {
         return {
           props: {
             style: {
@@ -77,7 +97,9 @@ const CoinList = (props: { data: CoinType[]; curreny: String }) => {
           },
           children: (
             <div>
-              {value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}%
+              {value &&
+                value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}
+              %
             </div>
           ),
         };
@@ -88,7 +110,7 @@ const CoinList = (props: { data: CoinType[]; curreny: String }) => {
       key: "week",
       dataIndex: "week",
       align: "end",
-      render(value) {
+      render: (value) => {
         return {
           props: {
             style: {
@@ -98,7 +120,9 @@ const CoinList = (props: { data: CoinType[]; curreny: String }) => {
           },
           children: (
             <div>
-              {value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}%
+              {value &&
+                value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}
+              %
             </div>
           ),
         };
@@ -112,20 +136,88 @@ const CoinList = (props: { data: CoinType[]; curreny: String }) => {
       render: (value) => (
         <span className="font-bold">
           {props.curreny === Constant.CURRENCY.KRW ? "₩" : "$"}
-          {value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}
+          {value && value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}
         </span>
       ),
     },
   ];
 
+  /**
+   * 북마크 설정
+   */
+  const onChangeBookMark = (value: boolean, item: CoinType, index: number) => {
+    messageApi.open({
+      type: "success",
+      content: `북마크에 ${!value ? "추가" : "삭제"} 되었습니다.`,
+    });
+
+    if (props.viewType === Constant.VIEW_TYPE.ALL) {
+      const changedItem = dataSource.filter(
+        (data: CoinType) => data.key === item.key
+      )[0];
+      changedItem.bookmark = !value;
+      dataSource.splice(index, 1, changedItem);
+
+      setDataSource(dataSource);
+
+      if (!value) {
+        let arr: CoinType[] = [];
+        let bookmark = localStorage.getItem("bookmark");
+        if (bookmark !== null) {
+          arr = JSON.parse(bookmark).concat(changedItem);
+        } else {
+          arr.push(changedItem);
+        }
+        localStorage.setItem(
+          "bookmark",
+          JSON.stringify(
+            arr.sort(
+              (a: CoinType, b: CoinType) => a.marketCapRank - b.marketCapRank
+            )
+          )
+        );
+      } else {
+        let bookmarkArr = JSON.parse(localStorage.getItem("bookmark")!);
+        bookmarkArr = bookmarkArr.filter(
+          (bookmarkItem: CoinType) => bookmarkItem.key !== item.key
+        );
+        localStorage.setItem(
+          "bookmark",
+          JSON.stringify(
+            bookmarkArr.sort(
+              (a: CoinType, b: CoinType) => a.marketCapRank - b.marketCapRank
+            )
+          )
+        );
+      }
+    } else {
+      const arr = dataSource.filter((data) => data.key !== item.key);
+      setDataSource(arr);
+
+      let bookmarkArr = JSON.parse(localStorage.getItem("bookmark")!);
+      bookmarkArr = bookmarkArr.filter(
+        (bookmarkItem: CoinType) => bookmarkItem.key !== item.key
+      );
+      localStorage.setItem(
+        "bookmark",
+        JSON.stringify(
+          bookmarkArr.sort(
+            (a: CoinType, b: CoinType) => a.marketCapRank - b.marketCapRank
+          )
+        )
+      );
+    }
+  };
+
   return (
     <>
       <Table
         columns={columns}
-        dataSource={props.data}
+        dataSource={dataSource}
         pagination={false}
         scroll={{ y: 500 }}
       />
+      {contextHolder}
     </>
   );
 };

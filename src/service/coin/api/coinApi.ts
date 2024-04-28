@@ -10,15 +10,10 @@ export function CoinApi() {
     page: Number,
     pageSize: Number
   ) => {
-    try {
-      const data = await axios.get(
-        `/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${pageSize}&page=${page}&sparkline=false&price_change_percentage=1h,24h,7d&locale=en`
-      );
-      return data;
-    } catch (e: any) {
-      message.error(e.message);
-      return false;
-    }
+    const data = await axios.get(
+      `/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${pageSize}&page=${page}&sparkline=false&price_change_percentage=1h,24h,7d&locale=en`
+    );
+    return data;
   };
 
   return {

@@ -8,4 +8,5 @@ export interface CoinType {
   day: number;
   week: number;
   volumes: number;
+  marketCapRank: number;
 }
