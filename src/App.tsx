@@ -1,7 +1,12 @@
 import React from "react";
+import List from "./pages/coin/home";
 
 function App() {
-  return <div>init</div>;
+  return (
+    <>
+      <List />
+    </>
+  );
 }
 
 export default App;
