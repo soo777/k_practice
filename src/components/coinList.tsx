@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 
 const CoinList = (props: { data: CoinType[]; currency: string; viewType: string }) => {
   const [messageApi, contextHolder] = message.useMessage();
+
   const [dataSource, setDataSource] = useState<CoinType[]>(props.data);
 
   useEffect(() => {

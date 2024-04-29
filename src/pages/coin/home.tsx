@@ -11,6 +11,7 @@ const Home = () => {
   const { getCoinMarkets } = CoinStore();
   const navigate = useNavigate();
   const location = useLocation();
+
   const [viewType, setViewType] = useState<string>(Constant.VIEW_TYPE.ALL);
   const [currency, setCurrency] = useState<string>(Constant.CURRENCY.KRW);
   const [page, setPage] = useState<number>(1);
@@ -33,30 +34,10 @@ const Home = () => {
    * 시세 목록 조회
    */
   const fetch = async (currency: string, page: number, pageSize: number) => {
-    let bookmarkJson = localStorage.getItem('bookmark');
     setLoading(true);
     const data: any = await getCoinMarkets(currency, page, pageSize);
     setLoading(false);
-    if (data.status === 200) {
-      let arr: CoinType[] = [];
-      data.data.forEach((item: any) => {
-        arr.push({
-          bookmark: bookmarkJson ? checkBookMark(bookmarkJson, item.id) : false,
-          id: item.id,
-          key: item.symbol,
-          symbol: item.name,
-          name: item.name,
-          price: item.current_price,
-          hour: item.price_change_percentage_1h_in_currency,
-          day: item.price_change_percentage_24h_in_currency,
-          week: item.price_change_percentage_7d_in_currency,
-          volumes: item.total_volume,
-          marketCapRank: item.market_cap_rank,
-          currency: undefined,
-        });
-      });
-      setAllList(allList.concat(arr));
-    }
+    setAllList(allList.concat(data));
   };
 
   /**

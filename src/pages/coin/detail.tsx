@@ -13,7 +13,6 @@ import CoinStore from '../../service/coin/store/coinStore';
 import { Divider, Image, Input, Select, Spin, message } from 'antd';
 import { Constant } from '../../util/Constant';
 import { CoinDetailType, CoinType } from '../../type/type';
-import { checkBookMark } from '../../util/Util';
 
 const Detail = () => {
   const query = queryString.parse(useLocation().search);
@@ -35,50 +34,11 @@ const Detail = () => {
    * 코인 상세 정보 조회
    */
   const fetch = async (name: string | (string | null)[] | null) => {
-    let bookMarkJson = localStorage.getItem('bookmark');
     setLoading(true);
-    const data: any = await getCoinByName(String(name).toLowerCase());
+    const coinData: any = await getCoinByName(String(name).toLowerCase(), currency);
     setLoading(false);
-
-    if (data.status === 200) {
-      const item = data.data;
-      let coinData: CoinDetailType = {
-        bookmark: bookMarkJson ? checkBookMark(bookMarkJson, item.id) : false,
-        id: item.id,
-        key: item.symbol,
-        image: item.image.thumb,
-        marketCapRank: item.market_cap_rank,
-        website: item.links.homepage[0],
-        localization_ko: item.localization.ko,
-        symbol: item.symbol,
-        name: item.name,
-        price_krw: item.market_data.current_price.krw,
-        price_usd: item.market_data.current_price.usd,
-        hour:
-          currency === Constant.CURRENCY.KRW
-            ? item.market_data.price_change_percentage_1h_in_currency.krw
-            : item.market_data.price_change_percentage_1h_in_currency.usd,
-        day:
-          currency === Constant.CURRENCY.KRW
-            ? item.market_data.price_change_percentage_24h_in_currency.krw
-            : item.market_data.price_change_percentage_24h_in_currency.usd,
-        week:
-          currency === Constant.CURRENCY.KRW
-            ? item.market_data.price_change_percentage_7d_in_currency.krw
-            : item.market_data.price_change_percentage_7d_in_currency.usd,
-        volumes_krw: item.market_data.total_volume.krw,
-        volumes_usd: item.market_data.total_volume.usd,
-        market_cap_krw: item.market_data.market_cap.krw,
-        market_cap_usd: item.market_data.market_cap.usd,
-        description_ko: item.description.ko,
-        dscription_en: item.description.en,
-        price_change_24h_krw: item.market_data.price_change_percentage_24h_in_currency.krw,
-        price_change_24h_usd: item.market_data.price_change_percentage_24h_in_currency.usd,
-        price_change_24h_btc: item.market_data.price_change_percentage_24h_in_currency.btc,
-      };
-      setCoinData(coinData);
-      setCurrencyValue(currency === Constant.CURRENCY.KRW ? coinData.price_krw : coinData.price_usd);
-    }
+    setCoinData(coinData);
+    setCurrencyValue(currency === Constant.CURRENCY.KRW ? coinData?.price_krw : coinData?.price_usd);
   };
 
   /**
@@ -327,7 +287,7 @@ const Detail = () => {
                       <Input
                         className="p-1 text-right"
                         type="text"
-                        value={currencyValue!.toLocaleString('ko-KR', {
+                        value={currencyValue?.toLocaleString('ko-KR', {
                           maximumFractionDigits: 2,
                         })}
                         onChange={(e) => {
