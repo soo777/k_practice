@@ -16,7 +16,11 @@ export function CoinStore() {
       const data = await getCoinMarketsApi(currency, page, pageSize);
       return data;
     } catch (e: any) {
-      message.error(e.message);
+      if (e.response.status === 429) {
+        message.error("잠시후에 다시 요청해주세요.");
+      } else {
+        message.error(e.message);
+      }
       return false;
     }
   };
@@ -29,8 +33,11 @@ export function CoinStore() {
       const data = await getCoinByNameApi(name);
       return data;
     } catch (e: any) {
-      message.error(e.message);
-      return false;
+      if (e.response.status === 429) {
+        message.error("잠시후에 다시 요청해주세요.");
+      } else {
+        message.error(e.message);
+      }
     }
   };
 

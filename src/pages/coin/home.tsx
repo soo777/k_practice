@@ -37,7 +37,7 @@ const Home = () => {
             ? checkBookMark(bookmarkJson, item.name)
             : false,
           id: item.id,
-          key: item.name,
+          key: item.symbol,
           symbol: item.name,
           name: item.name,
           price: item.current_price,
@@ -46,6 +46,7 @@ const Home = () => {
           week: item.price_change_percentage_7d_in_currency,
           volumes: item.total_volume,
           marketCapRank: item.market_cap_rank,
+          currency: undefined,
         });
       });
       setAllList(allList.concat(arr));
@@ -87,6 +88,7 @@ const Home = () => {
           week: item.week,
           volumes: item.volumes,
           marketCapRank: item.marketCapRank,
+          currency: item.currency,
         });
       });
       setAllList(arr);
@@ -180,7 +182,7 @@ const Home = () => {
 
           <CoinList
             data={viewType === Constant.VIEW_TYPE.ALL ? allList : bookMarkList}
-            curreny={currency}
+            currency={currency}
             viewType={
               viewType === Constant.VIEW_TYPE.ALL
                 ? Constant.VIEW_TYPE.ALL

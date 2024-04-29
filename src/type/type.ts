@@ -10,8 +10,8 @@ export interface CoinType {
   week: number;
   volumes: number;
   marketCapRank: number;
+  currency: string | undefined;
 }
-
 export interface CoinDetailType {
   bookmark: boolean;
   id: string;

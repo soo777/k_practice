@@ -30,10 +30,6 @@ const Detail = () => {
     fetch(query.name);
   }, []);
 
-  useEffect(() => {
-    console.log(coinData);
-  }, [coinData]);
-
   /**
    * 코인 상세 정보 조회
    */
@@ -50,7 +46,7 @@ const Detail = () => {
           ? checkBookMark(bookMarkJson, item.symbol)
           : false,
         id: item.id,
-        key: item.name,
+        key: item.symbol,
         image: item.image.thumb,
         marketCapRank: item.market_cap_rank,
         website: item.links.homepage[0],
@@ -59,9 +55,18 @@ const Detail = () => {
         name: item.name,
         price_krw: item.market_data.current_price.krw,
         price_usd: item.market_data.current_price.usd,
-        hour: item.market_data.price_change_percentage_1h_in_currency,
-        day: item.market_data.price_change_percentage_24h_in_currency,
-        week: item.market_data.price_change_percentage_7d_in_currency,
+        hour:
+          currency === Constant.CURRENCY.KRW
+            ? item.market_data.price_change_percentage_1h_in_currency.krw
+            : item.market_data.price_change_percentage_1h_in_currency.usd,
+        day:
+          currency === Constant.CURRENCY.KRW
+            ? item.market_data.price_change_percentage_24h_in_currency.krw
+            : item.market_data.price_change_percentage_24h_in_currency.usd,
+        week:
+          currency === Constant.CURRENCY.KRW
+            ? item.market_data.price_change_percentage_7d_in_currency.krw
+            : item.market_data.price_change_percentage_7d_in_currency.usd,
         volumes_krw: item.market_data.total_volume.krw,
         volumes_usd: item.market_data.total_volume.usd,
         market_cap_krw: item.market_data.market_cap.krw,
@@ -75,7 +80,6 @@ const Detail = () => {
         price_change_24h_btc:
           item.market_data.price_change_percentage_24h_in_currency.btc,
       };
-      console.log(coinData);
       setCoinData(coinData);
       setCurrencyValue(
         currency === Constant.CURRENCY.KRW
@@ -125,12 +129,19 @@ const Detail = () => {
         key: coinData!.symbol,
         symbol: coinData!.symbol,
         name: coinData!.name,
-        price: coinData!.price_krw,
+        price:
+          currency === Constant.CURRENCY.KRW
+            ? coinData!.price_krw
+            : coinData!.price_usd,
         hour: coinData!.hour,
         day: coinData!.day,
         week: coinData!.week,
-        volumes: coinData!.volumes_krw,
+        volumes:
+          currency === Constant.CURRENCY.KRW
+            ? coinData!.volumes_krw
+            : coinData!.volumes_usd,
         marketCapRank: coinData!.marketCapRank,
+        currency: currency,
       };
       let bookmark = localStorage.getItem("bookmark");
       if (bookmark !== null) {
@@ -199,7 +210,6 @@ const Detail = () => {
    */
   const onChangeCurrencyValue = (e: any) => {
     const value = e.target.value.replace(/[^0-9]/g, "");
-    console.log(value);
     let price =
       currency === Constant.CURRENCY.KRW
         ? coinData!.price_krw
@@ -293,7 +303,20 @@ const Detail = () => {
               </div>
               <div className="ml-8 text-right flex justify-end">
                 <div>1.00000000 {coinData?.symbol.toUpperCase()}</div>
-                <div className="w-20">{coinData?.price_change_24h_btc}%</div>
+                <div className="w-20">
+                  <span
+                    className={
+                      coinData && coinData!.price_change_24h_btc > 0
+                        ? "text-red-600"
+                        : "text-blue-600"
+                    }
+                  >
+                    {coinData?.price_change_24h_btc.toLocaleString("ko-KR", {
+                      maximumFractionDigits: 2,
+                    })}
+                  </span>
+                  %
+                </div>
               </div>
             </div>
             <div className="flex mt-3">

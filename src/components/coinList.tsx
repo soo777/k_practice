@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 const CoinList = (props: {
   data: CoinType[];
-  curreny: string;
+  currency: string;
   viewType: string;
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -57,9 +57,9 @@ const CoinList = (props: {
       dataIndex: "price",
       key: "price",
       align: "end",
-      render: (value) => (
+      render: (value, item: CoinType) => (
         <span className="font-bold">
-          {props.curreny === Constant.CURRENCY.KRW ? "₩" : "$"}
+          {item.currency === Constant.CURRENCY.KRW ? "₩" : "$"}
           {value && value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}
         </span>
       ),
@@ -138,9 +138,9 @@ const CoinList = (props: {
       key: "volumes",
       dataIndex: "volumes",
       align: "end",
-      render: (value) => (
+      render: (value, item: CoinType) => (
         <span className="font-bold">
-          {props.curreny === Constant.CURRENCY.KRW ? "₩" : "$"}
+          {item.currency === Constant.CURRENCY.KRW ? "₩" : "$"}
           {value && value.toLocaleString("ko-KR", { maximumFractionDigits: 2 })}
         </span>
       ),
@@ -157,6 +157,7 @@ const CoinList = (props: {
         (data: CoinType) => data.key === item.key
       )[0];
       changedItem.bookmark = !value;
+      changedItem.currency = props.currency;
       dataSource.splice(index, 1, changedItem);
 
       setDataSource(dataSource);
