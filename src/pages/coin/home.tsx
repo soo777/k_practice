@@ -5,7 +5,7 @@ import { Constant } from "../../util/Constant";
 import CoinList from "../../components/coinList";
 import { CoinType } from "../../type/type";
 
-const List = () => {
+const Home = () => {
   const { getCoinMarkets } = CoinStore();
   const [viewType, setViewType] = useState<string>(Constant.VIEW_TYPE.ALL);
   const [currency, setCurrency] = useState<string>(Constant.CURRENCY.KRW);
@@ -38,7 +38,7 @@ const List = () => {
           hour: item.price_change_percentage_1h_in_currency,
           day: item.price_change_percentage_24h_in_currency,
           week: item.price_change_percentage_7d_in_currency,
-          volumes: item.market_cap_change_24h,
+          volumes: item.total_volume,
           marketCapRank: item.market_cap_rank,
         });
       });
@@ -62,7 +62,6 @@ const List = () => {
   const onChangeViewType = (value: string) => {
     let bookMarkJson = localStorage.getItem("bookmark");
 
-    console.log(viewType);
     if (viewType === Constant.VIEW_TYPE.ALL) {
       setBookMarkList(bookMarkJson !== null ? JSON.parse(bookMarkJson) : []);
     } else {
@@ -70,10 +69,10 @@ const List = () => {
       allList.forEach((item: CoinType) => {
         arr.push({
           bookmark: bookMarkJson
-            ? checkBookMark(bookMarkJson, item.key)
+            ? checkBookMark(bookMarkJson, item.symbol)
             : false,
-          key: item.name,
-          symbol: item.name,
+          key: item.symbol,
+          symbol: item.symbol,
           name: item.name,
           price: item.price,
           hour: item.hour,
@@ -115,7 +114,7 @@ const List = () => {
 
   return (
     <>
-      <div className="w-9/12">
+      <div className="p-10">
         <div>
           <Segmented<string>
             value={viewType}
@@ -183,7 +182,7 @@ const List = () => {
         {viewType === Constant.VIEW_TYPE.ALL &&
           allList.length > 0 &&
           allList.length % pageSize === 0 && (
-            <Button className="w-full" onClick={loadNextPage}>
+            <Button className="w-full mt-3" onClick={loadNextPage}>
               + 더보기
             </Button>
           )}
@@ -192,4 +191,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default Home;

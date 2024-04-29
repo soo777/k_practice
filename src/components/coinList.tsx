@@ -4,6 +4,7 @@ import type { TableProps } from "antd";
 import { Constant } from "../util/Constant";
 import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { CoinType } from "../type/type";
+import { Link } from "react-router-dom";
 
 const CoinList = (props: {
   data: CoinType[];
@@ -39,7 +40,11 @@ const CoinList = (props: {
       title: "자산",
       dataIndex: "name",
       key: "name",
-      render: (value) => <span className="font-bold">{value}</span>,
+      render: (value) => (
+        <span className="font-bold cursor-pointer">
+          <Link to={`/coin?name=${value}`}>{value}</Link>
+        </span>
+      ),
     },
     {
       title: "",
@@ -146,12 +151,8 @@ const CoinList = (props: {
    * 북마크 설정
    */
   const onChangeBookMark = (value: boolean, item: CoinType, index: number) => {
-    messageApi.open({
-      type: "success",
-      content: `북마크에 ${!value ? "추가" : "삭제"} 되었습니다.`,
-    });
-
     if (props.viewType === Constant.VIEW_TYPE.ALL) {
+      // 전체보기
       const changedItem = dataSource.filter(
         (data: CoinType) => data.key === item.key
       )[0];
@@ -161,6 +162,7 @@ const CoinList = (props: {
       setDataSource(dataSource);
 
       if (!value) {
+        // 북마크 추가
         let arr: CoinType[] = [];
         let bookmark = localStorage.getItem("bookmark");
         if (bookmark !== null) {
@@ -177,6 +179,7 @@ const CoinList = (props: {
           )
         );
       } else {
+        // 북마크 삭제
         let bookmarkArr = JSON.parse(localStorage.getItem("bookmark")!);
         bookmarkArr = bookmarkArr.filter(
           (bookmarkItem: CoinType) => bookmarkItem.key !== item.key
@@ -191,6 +194,7 @@ const CoinList = (props: {
         );
       }
     } else {
+      // 북마크 보기
       const arr = dataSource.filter((data) => data.key !== item.key);
       setDataSource(arr);
 
@@ -207,11 +211,16 @@ const CoinList = (props: {
         )
       );
     }
+    messageApi.open({
+      type: "success",
+      content: `북마크에 ${!value ? "추가" : "삭제"} 되었습니다.`,
+    });
   };
 
   return (
     <>
       <Table
+        className="pt-3"
         columns={columns}
         dataSource={dataSource}
         pagination={false}
