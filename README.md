@@ -1,8 +1,9 @@
 ## 프로젝트 실행 방법
 
 - node 16 버전 이상
-- 프로젝트 root 경로에서 npm install로 패키지 다운로드
+- 프로젝트 root 경로에서 npm install 로 패키지 다운로드
 - npm run start 실행 (localhost:3000)
+- Prettier 사용 (vscode extension)
 
 ## 사용 라이브러리
 

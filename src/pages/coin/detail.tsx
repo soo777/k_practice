@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
@@ -6,13 +6,13 @@ import {
   StarFilled,
   StarOutlined,
   UpOutlined,
-} from "@ant-design/icons";
-import queryString from "query-string";
-import { useLocation } from "react-router-dom";
-import CoinStore from "../../service/coin/store/coinStore";
-import { Divider, Image, Input, Select, Spin, message } from "antd";
-import { Constant } from "../../util/Constant";
-import { CoinDetailType, CoinType } from "../../type/type";
+} from '@ant-design/icons';
+import queryString from 'query-string';
+import { useLocation } from 'react-router-dom';
+import CoinStore from '../../service/coin/store/coinStore';
+import { Divider, Image, Input, Select, Spin, message } from 'antd';
+import { Constant } from '../../util/Constant';
+import { CoinDetailType, CoinType } from '../../type/type';
 
 const Detail = () => {
   const query = queryString.parse(useLocation().search);
@@ -22,7 +22,7 @@ const Detail = () => {
   const [currency, setCurrency] = useState<string>(Constant.CURRENCY.KRW);
   const [openDiscription, setOpenDiscription] = useState<boolean>(false);
   const [coinData, setCoinData] = useState<CoinDetailType>();
-  const [cryptValue, setCryptValue] = useState<string>("1");
+  const [cryptValue, setCryptValue] = useState<string>('1');
   const [currencyValue, setCurrencyValue] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -34,7 +34,7 @@ const Detail = () => {
    * 코인 상세 정보 조회
    */
   const fetch = async (name: string | (string | null)[] | null) => {
-    let bookMarkJson = localStorage.getItem("bookmark");
+    let bookMarkJson = localStorage.getItem('bookmark');
     setLoading(true);
     const data: any = await getCoinByName(String(name).toLowerCase());
     setLoading(false);
@@ -71,19 +71,12 @@ const Detail = () => {
         market_cap_usd: item.market_data.market_cap.usd,
         description_ko: item.description.ko,
         dscription_en: item.description.en,
-        price_change_24h_krw:
-          item.market_data.price_change_percentage_24h_in_currency.krw,
-        price_change_24h_usd:
-          item.market_data.price_change_percentage_24h_in_currency.usd,
-        price_change_24h_btc:
-          item.market_data.price_change_percentage_24h_in_currency.btc,
+        price_change_24h_krw: item.market_data.price_change_percentage_24h_in_currency.krw,
+        price_change_24h_usd: item.market_data.price_change_percentage_24h_in_currency.usd,
+        price_change_24h_btc: item.market_data.price_change_percentage_24h_in_currency.btc,
       };
       setCoinData(coinData);
-      setCurrencyValue(
-        currency === Constant.CURRENCY.KRW
-          ? coinData.price_krw
-          : coinData.price_usd
-      );
+      setCurrencyValue(currency === Constant.CURRENCY.KRW ? coinData.price_krw : coinData.price_usd);
     }
   };
 
@@ -91,10 +84,7 @@ const Detail = () => {
    * 북마크 여부 판별
    */
   const checkBookMark = (bookmarkJson: string, id: string) => {
-    return JSON.parse(bookmarkJson).filter((item: CoinType) => item.id === id)
-      .length > 0
-      ? true
-      : false;
+    return JSON.parse(bookmarkJson).filter((item: CoinType) => item.id === id).length > 0 ? true : false;
   };
 
   /**
@@ -102,11 +92,8 @@ const Detail = () => {
    */
   const onChangeCurrency = (value: string) => {
     setCurrency(value);
-    let price =
-      value === Constant.CURRENCY.KRW
-        ? coinData!.price_krw
-        : coinData!.price_usd;
-    setCryptValue("1");
+    let price = value === Constant.CURRENCY.KRW ? coinData!.price_krw : coinData!.price_usd;
+    setCryptValue('1');
     setCurrencyValue(price);
   };
 
@@ -127,52 +114,36 @@ const Detail = () => {
         key: coinData!.symbol,
         symbol: coinData!.symbol,
         name: coinData!.name,
-        price:
-          currency === Constant.CURRENCY.KRW
-            ? coinData!.price_krw
-            : coinData!.price_usd,
+        price: currency === Constant.CURRENCY.KRW ? coinData!.price_krw : coinData!.price_usd,
         hour: coinData!.hour,
         day: coinData!.day,
         week: coinData!.week,
-        volumes:
-          currency === Constant.CURRENCY.KRW
-            ? coinData!.volumes_krw
-            : coinData!.volumes_usd,
+        volumes: currency === Constant.CURRENCY.KRW ? coinData!.volumes_krw : coinData!.volumes_usd,
         marketCapRank: coinData!.marketCapRank,
         currency: currency,
       };
-      let bookmark = localStorage.getItem("bookmark");
+      let bookmark = localStorage.getItem('bookmark');
       if (bookmark !== null) {
         arr = JSON.parse(bookmark).concat(changedItem);
       } else {
         arr.push(changedItem);
       }
       localStorage.setItem(
-        "bookmark",
-        JSON.stringify(
-          arr.sort(
-            (a: CoinType, b: CoinType) => a.marketCapRank - b.marketCapRank
-          )
-        )
+        'bookmark',
+        JSON.stringify(arr.sort((a: CoinType, b: CoinType) => a.marketCapRank - b.marketCapRank)),
       );
     } else {
       // 북마크 삭제
-      let bookmarkArr = JSON.parse(localStorage.getItem("bookmark")!);
-      bookmarkArr = bookmarkArr.filter(
-        (bookmarkItem: CoinType) => bookmarkItem.id !== coinData?.id
-      );
+      let bookmarkArr = JSON.parse(localStorage.getItem('bookmark')!);
+      bookmarkArr = bookmarkArr.filter((bookmarkItem: CoinType) => bookmarkItem.id !== coinData?.id);
       localStorage.setItem(
-        "bookmark",
-        JSON.stringify(
-          bookmarkArr.sort(
-            (a: CoinType, b: CoinType) => a.marketCapRank - b.marketCapRank
-          )
-        )
+        'bookmark',
+        JSON.stringify(bookmarkArr.sort((a: CoinType, b: CoinType) => a.marketCapRank - b.marketCapRank)),
       );
     }
     messageApi.open({
-      type: "success",
-      content: `북마크에 ${!coinData?.bookmark ? "추가" : "삭제"} 되었습니다.`,
+      type: 'success',
+      content: `북마크에 ${!coinData?.bookmark ? '추가' : '삭제'} 되었습니다.`,
     });
   };
 
@@ -180,13 +151,10 @@ const Detail = () => {
    * 가격 계산(코인)
    */
   const onChangeCryptValue = (e: any) => {
-    const value = e.target.value.replace(/[^-\.0-9]/g, "");
-    const arr = value.split(".");
+    const value = e.target.value.replace(/[^-\.0-9]/g, '');
+    const arr = value.split('.');
 
-    let price =
-      currency === Constant.CURRENCY.KRW
-        ? coinData!.price_krw
-        : coinData!.price_usd;
+    let price = currency === Constant.CURRENCY.KRW ? coinData!.price_krw : coinData!.price_usd;
 
     if (arr.length > 2) {
       return;
@@ -194,9 +162,9 @@ const Detail = () => {
     if (arr[1] && arr[1].length > 8) {
       return;
     }
-    if (value === "") {
+    if (value === '') {
       setCurrencyValue(price);
-      setCryptValue("1");
+      setCryptValue('1');
     } else {
       setCurrencyValue(Number(value) * price);
       setCryptValue(value);
@@ -207,12 +175,9 @@ const Detail = () => {
    * 가격 계산(통화)
    */
   const onChangeCurrencyValue = (e: any) => {
-    const value = e.target.value.replace(/[^0-9]/g, "");
-    let price =
-      currency === Constant.CURRENCY.KRW
-        ? coinData!.price_krw
-        : coinData!.price_usd;
-    if (currency === Constant.CURRENCY.KRW && value === "") {
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    let price = currency === Constant.CURRENCY.KRW ? coinData!.price_krw : coinData!.price_usd;
+    if (currency === Constant.CURRENCY.KRW && value === '') {
       setCryptValue((1 / price).toFixed(8));
       setCurrencyValue(1);
       return;
@@ -228,10 +193,7 @@ const Detail = () => {
         <div className="flex justify-between">
           <div>
             {coinData?.bookmark ? (
-              <StarFilled
-                className="text-xl text-yellow-200"
-                onClick={changeBookMark}
-              />
+              <StarFilled className="text-xl text-yellow-200" onClick={changeBookMark} />
             ) : (
               <StarOutlined className="text-xl" onClick={changeBookMark} />
             )}
@@ -250,8 +212,8 @@ const Detail = () => {
                 onChangeCurrency(value);
               }}
               options={[
-                { value: Constant.CURRENCY.KRW, label: "KRW 보기" },
-                { value: Constant.CURRENCY.USD, label: "USD 보기" },
+                { value: Constant.CURRENCY.KRW, label: 'KRW 보기' },
+                { value: Constant.CURRENCY.USD, label: 'USD 보기' },
               ]}
             />
           </div>
@@ -267,9 +229,7 @@ const Detail = () => {
                   <td className="p-3">rank {coinData?.marketCapRank}</td>
                 </tr>
                 <tr>
-                  <th className="w-1/4 border-solid border-2 border-black-100 p-3 text-left font-bold">
-                    웹사이트
-                  </th>
+                  <th className="w-1/4 border-solid border-2 border-black-100 p-3 text-left font-bold">웹사이트</th>
                   <td className="p-3">{coinData?.website}</td>
                 </tr>
               </tbody>
@@ -280,22 +240,16 @@ const Detail = () => {
               <div className="text-right flex justify-end">
                 <div className="text-2xl font-bold">
                   {currency === Constant.CURRENCY.KRW
-                    ? `₩${coinData?.price_krw.toLocaleString("ko-KR", {
+                    ? `₩${coinData?.price_krw.toLocaleString('ko-KR', {
                         maximumFractionDigits: 2,
                       })}`
-                    : `$${coinData?.price_usd.toLocaleString("ko-KR", {
+                    : `$${coinData?.price_usd.toLocaleString('ko-KR', {
                         maximumFractionDigits: 2,
                       })}`}
                 </div>
                 <div className="text-lg w-20">
-                  <span
-                    className={
-                      coinData && coinData!.price_change_24h_krw > 0
-                        ? "text-red-600"
-                        : "text-blue-600"
-                    }
-                  >
-                    {coinData?.price_change_24h_krw.toLocaleString("ko-KR", {
+                  <span className={coinData && coinData!.price_change_24h_krw > 0 ? 'text-red-600' : 'text-blue-600'}>
+                    {coinData?.price_change_24h_krw.toLocaleString('ko-KR', {
                       maximumFractionDigits: 2,
                     })}
                   </span>
@@ -305,14 +259,8 @@ const Detail = () => {
               <div className="ml-8 text-right flex justify-end">
                 <div>1.00000000 {coinData?.symbol.toUpperCase()}</div>
                 <div className="w-20">
-                  <span
-                    className={
-                      coinData && coinData!.price_change_24h_btc > 0
-                        ? "text-red-600"
-                        : "text-blue-600"
-                    }
-                  >
-                    {coinData?.price_change_24h_btc.toLocaleString("ko-KR", {
+                  <span className={coinData && coinData!.price_change_24h_btc > 0 ? 'text-red-600' : 'text-blue-600'}>
+                    {coinData?.price_change_24h_btc.toLocaleString('ko-KR', {
                       maximumFractionDigits: 2,
                     })}
                   </span>
@@ -325,10 +273,10 @@ const Detail = () => {
                 <div>시가총액</div>
                 <div>
                   {currency === Constant.CURRENCY.KRW
-                    ? `₩${coinData?.market_cap_krw.toLocaleString("ko-KR", {
+                    ? `₩${coinData?.market_cap_krw.toLocaleString('ko-KR', {
                         maximumFractionDigits: 2,
                       })}`
-                    : `$${coinData?.market_cap_usd.toLocaleString("ko-KR", {
+                    : `$${coinData?.market_cap_usd.toLocaleString('ko-KR', {
                         maximumFractionDigits: 2,
                       })}`}
                 </div>
@@ -337,10 +285,10 @@ const Detail = () => {
                 <div>24시간 거래대금</div>
                 <div>
                   {currency === Constant.CURRENCY.KRW
-                    ? `₩${coinData?.volumes_krw.toLocaleString("ko-KR", {
+                    ? `₩${coinData?.volumes_krw.toLocaleString('ko-KR', {
                         maximumFractionDigits: 2,
                       })}`
-                    : `$${coinData?.volumes_usd.toLocaleString("ko-KR", {
+                    : `$${coinData?.volumes_usd.toLocaleString('ko-KR', {
                         maximumFractionDigits: 2,
                       })}`}
                 </div>
@@ -355,14 +303,12 @@ const Detail = () => {
               <table className="w-full">
                 <tbody>
                   <tr>
-                    <th className="w-1/3 border-solid  bg-gray-200 p-3">
-                      {coinData?.symbol.toUpperCase()}
-                    </th>
+                    <th className="w-1/3 border-solid  bg-gray-200 p-3">{coinData?.symbol.toUpperCase()}</th>
                     <td className="w-2/3 bg-gray-50 p-3 text-right">
                       <Input
                         className="p-1 text-right"
                         type="text"
-                        value={Number(cryptValue).toLocaleString("ko-KR", {
+                        value={Number(cryptValue).toLocaleString('ko-KR', {
                           maximumFractionDigits: 2,
                         })}
                         onChange={(e) => {
@@ -382,14 +328,12 @@ const Detail = () => {
               <table className="w-full">
                 <tbody>
                   <tr>
-                    <th className="w-1/3 border-solid  bg-gray-200 p-3">
-                      {currency.toUpperCase()}
-                    </th>
+                    <th className="w-1/3 border-solid  bg-gray-200 p-3">{currency.toUpperCase()}</th>
                     <td className="w-2/3 bg-gray-50 p-3 text-right">
                       <Input
                         className="p-1 text-right"
                         type="text"
-                        value={currencyValue!.toLocaleString("ko-KR", {
+                        value={currencyValue!.toLocaleString('ko-KR', {
                           maximumFractionDigits: 2,
                         })}
                         onChange={(e) => {
@@ -409,23 +353,15 @@ const Detail = () => {
             <div className="p-5 flex justify-center">
               <span className="mr-3">설명보기</span>
               {openDiscription ? (
-                <UpOutlined
-                  className="cursor-pointer"
-                  onClick={() => setOpenDiscription(!openDiscription)}
-                />
+                <UpOutlined className="cursor-pointer" onClick={() => setOpenDiscription(!openDiscription)} />
               ) : (
-                <DownOutlined
-                  className="cursor-pointer"
-                  onClick={() => setOpenDiscription(!openDiscription)}
-                />
+                <DownOutlined className="cursor-pointer" onClick={() => setOpenDiscription(!openDiscription)} />
               )}
             </div>
             <Divider />
             {openDiscription && (
               <div className="whitespace-pre-line">
-                {coinData?.description_ko
-                  ? coinData?.description_ko
-                  : coinData?.dscription_en}
+                {coinData?.description_ko ? coinData?.description_ko : coinData?.dscription_en}
               </div>
             )}
           </>

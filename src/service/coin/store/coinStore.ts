@@ -1,5 +1,5 @@
-import { message } from "antd";
-import CoinApi from "../api/coinApi";
+import { message } from 'antd';
+import CoinApi from '../api/coinApi';
 
 export function CoinStore() {
   const { getCoinMarketsApi, getCoinByNameApi } = CoinApi();
@@ -7,17 +7,13 @@ export function CoinStore() {
   /**
    * coin market list 조회
    */
-  const getCoinMarkets = async (
-    currency: string,
-    page: number,
-    pageSize: number
-  ) => {
+  const getCoinMarkets = async (currency: string, page: number, pageSize: number) => {
     try {
       const data = await getCoinMarketsApi(currency, page, pageSize);
       return data;
     } catch (e: any) {
       if (e.response.status === 429) {
-        message.error("잠시후에 다시 요청해주세요.");
+        message.error('잠시후에 다시 요청해주세요.');
       } else {
         message.error(e.message);
       }
@@ -34,7 +30,7 @@ export function CoinStore() {
       return data;
     } catch (e: any) {
       if (e.response.status === 429) {
-        message.error("잠시후에 다시 요청해주세요.");
+        message.error('잠시후에 다시 요청해주세요.');
       } else {
         message.error(e.message);
       }

@@ -1,7 +1,7 @@
 export const Constant = {
   CURRENCY: {
-    KRW: "krw",
-    USD: "usd",
+    KRW: 'krw',
+    USD: 'usd',
   },
 
   PAGE_SIZE: {
@@ -11,7 +11,7 @@ export const Constant = {
   },
 
   VIEW_TYPE: {
-    ALL: "ALL",
-    BOOKMARK: "BOOKMARK",
+    ALL: 'ALL',
+    BOOKMARK: 'BOOKMARK',
   },
 };

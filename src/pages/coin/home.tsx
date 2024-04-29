@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Button, Segmented, Select, Spin } from "antd";
-import CoinStore from "../../service/coin/store/coinStore";
-import { Constant } from "../../util/Constant";
-import CoinList from "../../components/coinList";
-import { CoinType } from "../../type/type";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { Button, Segmented, Select, Spin } from 'antd';
+import CoinStore from '../../service/coin/store/coinStore';
+import { Constant } from '../../util/Constant';
+import CoinList from '../../components/coinList';
+import { CoinType } from '../../type/type';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Home = () => {
   const { getCoinMarkets } = CoinStore();
@@ -19,8 +19,8 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (location.pathname === "/bookmark") {
-      let bookMarkJson = localStorage.getItem("bookmark");
+    if (location.pathname === '/bookmark') {
+      let bookMarkJson = localStorage.getItem('bookmark');
       setBookMarkList(bookMarkJson !== null ? JSON.parse(bookMarkJson) : []);
       setViewType(Constant.VIEW_TYPE.BOOKMARK);
     } else {
@@ -32,7 +32,7 @@ const Home = () => {
    * 시세 목록 조회
    */
   const fetch = async (currency: string, page: number, pageSize: number) => {
-    let bookmarkJson = localStorage.getItem("bookmark");
+    let bookmarkJson = localStorage.getItem('bookmark');
     setLoading(true);
     const data: any = await getCoinMarkets(currency, page, pageSize);
     setLoading(false);
@@ -62,17 +62,14 @@ const Home = () => {
    * 북마크 여부 판별
    */
   const checkBookMark = (bookmarkJson: string, id: string) => {
-    return JSON.parse(bookmarkJson).filter((item: CoinType) => item.id === id)
-      .length > 0
-      ? true
-      : false;
+    return JSON.parse(bookmarkJson).filter((item: CoinType) => item.id === id).length > 0 ? true : false;
   };
 
   /**
    * 보기 방식 변경
    */
   const onChangeViewType = (value: string) => {
-    let bookMarkJson = localStorage.getItem("bookmark");
+    let bookMarkJson = localStorage.getItem('bookmark');
 
     if (viewType === Constant.VIEW_TYPE.ALL) {
       setBookMarkList(bookMarkJson !== null ? JSON.parse(bookMarkJson) : []);
@@ -98,7 +95,7 @@ const Home = () => {
     }
 
     setViewType(value);
-    navigate(value === Constant.VIEW_TYPE.ALL ? "/home" : "/bookmark");
+    navigate(value === Constant.VIEW_TYPE.ALL ? '/home' : '/bookmark');
   };
 
   /**
@@ -133,8 +130,8 @@ const Home = () => {
             <Segmented<string>
               value={viewType}
               options={[
-                { value: Constant.VIEW_TYPE.ALL, label: "가상자산 시세 목록" },
-                { value: Constant.VIEW_TYPE.BOOKMARK, label: "북마크 목록" },
+                { value: Constant.VIEW_TYPE.ALL, label: '가상자산 시세 목록' },
+                { value: Constant.VIEW_TYPE.BOOKMARK, label: '북마크 목록' },
               ]}
               block
               onChange={(value) => {
@@ -153,8 +150,8 @@ const Home = () => {
                   onChangeViewType(value);
                 }}
                 options={[
-                  { value: Constant.VIEW_TYPE.ALL, label: "전체 보기" },
-                  { value: Constant.VIEW_TYPE.BOOKMARK, label: "북마크 보기" },
+                  { value: Constant.VIEW_TYPE.ALL, label: '전체 보기' },
+                  { value: Constant.VIEW_TYPE.BOOKMARK, label: '북마크 보기' },
                 ]}
               />
               <Select
@@ -164,8 +161,8 @@ const Home = () => {
                   onChangeCurrency(value);
                 }}
                 options={[
-                  { value: Constant.CURRENCY.KRW, label: "KRW 보기" },
-                  { value: Constant.CURRENCY.USD, label: "USD 보기" },
+                  { value: Constant.CURRENCY.KRW, label: 'KRW 보기' },
+                  { value: Constant.CURRENCY.USD, label: 'USD 보기' },
                 ]}
               />
               <Select
@@ -175,9 +172,9 @@ const Home = () => {
                   onChangePageSize(value);
                 }}
                 options={[
-                  { value: Constant.PAGE_SIZE.TEN, label: "10개 보기" },
-                  { value: Constant.PAGE_SIZE.THIRTY, label: "30개 보기" },
-                  { value: Constant.PAGE_SIZE.FIFTY, label: "50개 보기" },
+                  { value: Constant.PAGE_SIZE.TEN, label: '10개 보기' },
+                  { value: Constant.PAGE_SIZE.THIRTY, label: '30개 보기' },
+                  { value: Constant.PAGE_SIZE.FIFTY, label: '50개 보기' },
                 ]}
               />
             </div>
@@ -186,20 +183,14 @@ const Home = () => {
           <CoinList
             data={viewType === Constant.VIEW_TYPE.ALL ? allList : bookMarkList}
             currency={currency}
-            viewType={
-              viewType === Constant.VIEW_TYPE.ALL
-                ? Constant.VIEW_TYPE.ALL
-                : Constant.VIEW_TYPE.BOOKMARK
-            }
+            viewType={viewType === Constant.VIEW_TYPE.ALL ? Constant.VIEW_TYPE.ALL : Constant.VIEW_TYPE.BOOKMARK}
           />
 
-          {viewType === Constant.VIEW_TYPE.ALL &&
-            allList.length > 0 &&
-            allList.length % pageSize === 0 && (
-              <Button className="w-full mt-3" onClick={loadNextPage}>
-                + 더보기
-              </Button>
-            )}
+          {viewType === Constant.VIEW_TYPE.ALL && allList.length > 0 && allList.length % pageSize === 0 && (
+            <Button className="w-full mt-3" onClick={loadNextPage}>
+              + 더보기
+            </Button>
+          )}
         </div>
       </Spin>
     </>
