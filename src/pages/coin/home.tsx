@@ -4,11 +4,12 @@ import CoinStore from "../../service/coin/store/coinStore";
 import { Constant } from "../../util/Constant";
 import CoinList from "../../components/coinList";
 import { CoinType } from "../../type/type";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Home = () => {
   const { getCoinMarkets } = CoinStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [viewType, setViewType] = useState<string>(Constant.VIEW_TYPE.ALL);
   const [currency, setCurrency] = useState<string>(Constant.CURRENCY.KRW);
   const [page, setPage] = useState<number>(1);
@@ -18,7 +19,13 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch(currency, page, pageSize);
+    if (location.pathname === "/bookmark") {
+      let bookMarkJson = localStorage.getItem("bookmark");
+      setBookMarkList(bookMarkJson !== null ? JSON.parse(bookMarkJson) : []);
+      setViewType(Constant.VIEW_TYPE.BOOKMARK);
+    } else {
+      fetch(currency, page, pageSize);
+    }
   }, []);
 
   /**
@@ -33,9 +40,7 @@ const Home = () => {
       let arr: CoinType[] = [];
       data.data.forEach((item: any) => {
         arr.push({
-          bookmark: bookmarkJson
-            ? checkBookMark(bookmarkJson, item.name)
-            : false,
+          bookmark: bookmarkJson ? checkBookMark(bookmarkJson, item.id) : false,
           id: item.id,
           key: item.symbol,
           symbol: item.name,
@@ -56,8 +61,8 @@ const Home = () => {
   /**
    * 북마크 여부 판별
    */
-  const checkBookMark = (bookmarkJson: string, key: string) => {
-    return JSON.parse(bookmarkJson).filter((item: CoinType) => item.key === key)
+  const checkBookMark = (bookmarkJson: string, id: string) => {
+    return JSON.parse(bookmarkJson).filter((item: CoinType) => item.id === id)
       .length > 0
       ? true
       : false;
@@ -75,9 +80,7 @@ const Home = () => {
       let arr: CoinType[] = [];
       allList.forEach((item: CoinType) => {
         arr.push({
-          bookmark: bookMarkJson
-            ? checkBookMark(bookMarkJson, item.symbol)
-            : false,
+          bookmark: bookMarkJson ? checkBookMark(bookMarkJson, item.id) : false,
           id: item.id,
           key: item.symbol,
           symbol: item.symbol,

@@ -42,9 +42,7 @@ const Detail = () => {
     if (data.status === 200) {
       const item = data.data;
       let coinData: CoinDetailType = {
-        bookmark: bookMarkJson
-          ? checkBookMark(bookMarkJson, item.symbol)
-          : false,
+        bookmark: bookMarkJson ? checkBookMark(bookMarkJson, item.id) : false,
         id: item.id,
         key: item.symbol,
         image: item.image.thumb,
@@ -92,8 +90,8 @@ const Detail = () => {
   /**
    * 북마크 여부 판별
    */
-  const checkBookMark = (bookmarkJson: string, key: string) => {
-    return JSON.parse(bookmarkJson).filter((item: CoinType) => item.key === key)
+  const checkBookMark = (bookmarkJson: string, id: string) => {
+    return JSON.parse(bookmarkJson).filter((item: CoinType) => item.id === id)
       .length > 0
       ? true
       : false;
@@ -161,7 +159,7 @@ const Detail = () => {
       // 북마크 삭제
       let bookmarkArr = JSON.parse(localStorage.getItem("bookmark")!);
       bookmarkArr = bookmarkArr.filter(
-        (bookmarkItem: CoinType) => bookmarkItem.key !== coinData?.key
+        (bookmarkItem: CoinType) => bookmarkItem.id !== coinData?.id
       );
       localStorage.setItem(
         "bookmark",
@@ -230,7 +228,10 @@ const Detail = () => {
         <div className="flex justify-between">
           <div>
             {coinData?.bookmark ? (
-              <StarFilled className="text-xl" onClick={changeBookMark} />
+              <StarFilled
+                className="text-xl text-yellow-200"
+                onClick={changeBookMark}
+              />
             ) : (
               <StarOutlined className="text-xl" onClick={changeBookMark} />
             )}

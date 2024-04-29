@@ -154,7 +154,7 @@ const CoinList = (props: {
     if (props.viewType === Constant.VIEW_TYPE.ALL) {
       // 전체보기
       const changedItem = dataSource.filter(
-        (data: CoinType) => data.key === item.key
+        (data: CoinType) => data.id === item.id
       )[0];
       changedItem.bookmark = !value;
       changedItem.currency = props.currency;
@@ -183,7 +183,7 @@ const CoinList = (props: {
         // 북마크 삭제
         let bookmarkArr = JSON.parse(localStorage.getItem("bookmark")!);
         bookmarkArr = bookmarkArr.filter(
-          (bookmarkItem: CoinType) => bookmarkItem.key !== item.key
+          (bookmarkItem: CoinType) => bookmarkItem.id !== item.id
         );
         localStorage.setItem(
           "bookmark",
@@ -196,12 +196,12 @@ const CoinList = (props: {
       }
     } else {
       // 북마크 보기
-      const arr = dataSource.filter((data) => data.key !== item.key);
+      const arr = dataSource.filter((data) => data.id !== item.id);
       setDataSource(arr);
 
       let bookmarkArr = JSON.parse(localStorage.getItem("bookmark")!);
       bookmarkArr = bookmarkArr.filter(
-        (bookmarkItem: CoinType) => bookmarkItem.key !== item.key
+        (bookmarkItem: CoinType) => bookmarkItem.id !== item.id
       );
       localStorage.setItem(
         "bookmark",
