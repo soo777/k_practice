@@ -5,6 +5,7 @@ import { Constant } from '../../util/Constant';
 import CoinList from '../../components/coinList';
 import { CoinType } from '../../type/type';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { checkBookMark } from '../../util/Util';
 
 const Home = () => {
   const { getCoinMarkets } = CoinStore();
@@ -56,13 +57,6 @@ const Home = () => {
       });
       setAllList(allList.concat(arr));
     }
-  };
-
-  /**
-   * 북마크 여부 판별
-   */
-  const checkBookMark = (bookmarkJson: string, id: string) => {
-    return JSON.parse(bookmarkJson).filter((item: CoinType) => item.id === id).length > 0 ? true : false;
   };
 
   /**

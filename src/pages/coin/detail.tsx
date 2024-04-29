@@ -13,6 +13,7 @@ import CoinStore from '../../service/coin/store/coinStore';
 import { Divider, Image, Input, Select, Spin, message } from 'antd';
 import { Constant } from '../../util/Constant';
 import { CoinDetailType, CoinType } from '../../type/type';
+import { checkBookMark } from '../../util/Util';
 
 const Detail = () => {
   const query = queryString.parse(useLocation().search);
@@ -78,13 +79,6 @@ const Detail = () => {
       setCoinData(coinData);
       setCurrencyValue(currency === Constant.CURRENCY.KRW ? coinData.price_krw : coinData.price_usd);
     }
-  };
-
-  /**
-   * 북마크 여부 판별
-   */
-  const checkBookMark = (bookmarkJson: string, id: string) => {
-    return JSON.parse(bookmarkJson).filter((item: CoinType) => item.id === id).length > 0 ? true : false;
   };
 
   /**
