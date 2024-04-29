@@ -40,9 +40,9 @@ const CoinList = (props: {
       title: "자산",
       dataIndex: "name",
       key: "name",
-      render: (value) => (
+      render: (value: boolean, item: CoinType) => (
         <span className="font-bold cursor-pointer">
-          <Link to={`/coin?name=${value}`}>{value}</Link>
+          <Link to={`/coin?name=${item.id}`}>{value}</Link>
         </span>
       ),
     },

@@ -8,6 +8,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/bookmark" element={<Home />} />
       <Route path="/coin" element={<Detail />} />
     </Routes>
   );

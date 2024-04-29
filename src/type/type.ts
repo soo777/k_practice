@@ -1,5 +1,6 @@
 export interface CoinType {
   bookmark: boolean;
+  id: string;
   key: string;
   symbol: string;
   name: string;
@@ -13,6 +14,7 @@ export interface CoinType {
 
 export interface CoinDetailType {
   bookmark: boolean;
+  id: string;
   key: string;
   image: string;
   marketCapRank: number;
